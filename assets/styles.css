@@ -1,0 +1,14 @@
+*{
+    padding-left: 10px;
+}
+
+.div-block {
+    display: block !important;
+    color: #555d;
+    margin: 10px;
+}
+
+label, input {
+    display: block; 
+}
+
