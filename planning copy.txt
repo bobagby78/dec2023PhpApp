@@ -1,0 +1,31 @@
+The database is up and running with a user table that is being written to during 
+register and is being read from during login. 
+
+sessions have been successful in the past, so should be up and running or easily 
+fixed
+
+next steps
+
+STORY 1:
+    create a user resources(?) page and redirect to that when the user logs in. 
+
+    This story requires that the login function be working with sessions
+        the resources page should use a query param that will be userid
+        
+        
+
+STORY 2:
+    user resources page development
+
+        create a table that holds user resources. 
+            table will house favorite pokemon name
+            table will have a foreign key that associates userid to favPokemon
+
+        user resources will retrieve favPokemon for user
+
+        user resources will leverage free pokemon api to display relevant stats about favPokemon
+
+    
+STORY 3:
+
+
