@@ -1,4 +1,11 @@
 <?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+// Load environment variables from .env file
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 // $host = 'localhost'; //set the host
 // $port = "5432";
 // $dbname = 'dec2023phpapp'; //set the db name
@@ -17,11 +24,11 @@
 //     echo 'here we go';
 // }
 
-$host = 'localhost';
-$port = '5432';
-$dbname = 'phpPlayground';
-$user = 'postgres';
-$password = 'postgres';
+$host = $_ENV['DB_HOST'];
+$port = $_ENV['DB_PORT'];
+$dbname = $_ENV['DB_NAME'];
+$user = $_ENV['DB_USER'];
+$password = $_ENV['DB_PASSWORD'];
 
 $connxnString = "host={$host} port={$port} dbname={$dbname} user={$user} password={$password}";
 $connxn = pg_connect($connxnString);

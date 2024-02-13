@@ -1,4 +1,5 @@
 <?php
+include ('../cfg.php');
 session_start();
 if(isset($_SESSION['username'])){
     $activeUser = ucfirst($_SESSION['username']);
@@ -7,24 +8,41 @@ if(isset($_SESSION['username'])){
     $activeUser = "Unknown user";
 }
 
-/**
- * PICK UP HERE
- * TABLE HAS BEEN CREATED
- * add form to either add or update 
- * fav pokemon
-*/
-include ('../cfg.php');
+//get user favorite pokemon if it exists
+$getFav = "select * from fav_pokemon where id = $1";
+$id = intval($userid);
+
+$fPResult = pg_query_params($connxn, $getFav, array($userid));
+if(!$fPResult){
+    die("Error in query: ") . pg_last_error($connxn);
+}
+
+$row = pg_fetch_assoc($fPResult);
+$favPokemon = $row['pokemon'];
+
+
+if($_SERVER['REQUEST_METHOD'] == "POST"){
+    $query = "insert into fav_pokemon (id, pokemon) 
+                values ($1, $2) 
+                on conflict (id) do update
+                set pokemon = $2";
+    $result = pg_query_params($connxn, $query, array($userid, $_POST['fav-pokemon']));
+}
+
 $userFav = $_POST['fav-pokemon'];
 
-$favPokemon;
+$addFav = isset($userFav) ? htmlspecialchars($userFav) : '';
+if(is_null($favPokemon)){
+    $favPokemon = 'undecided';
+    $pokeFormTitle = 'Add a favorite Pokemon!';
+    $button = 'Add it!';
+}else{
+    $pokeFormTitle = 'Do you have a new fav?';
+    $button = 'Change it!';
+}
 
-/**get user's fav pokemon from fav pokemon table by userid
- * query the fav pokemon table with userid and set above var if exists
- * if fav pokemon, display its stats on page
- * form input, text on title reads "change fav pokemon?"
- * 
- * if no fav pokemon, form input, text on title reads "add fav pokemon"
-*/  
+error_log('favorite pokemon: ' . $favPokemon);
+
 ?>
 
 <!DOCTYPE html>
@@ -39,14 +57,15 @@ $favPokemon;
 <body>
     <div class="div-block">
         <h1><?=$activeUser?>'s Resources</h1>
-        <p><?=$userid ?></p>
+        <p>Your favorite Pokemon is <?=$favPokemon?></p>
+        <label for="fav-pokemon-form"><?=$pokeFormTitle?> </label>
+        <form class="form-control" action="/public/resources.php" method='post'>
+            <input class="input-form" name="fav-pokemon" id="fav-pokemon-form" type="text">
+            <input class="input-button" type="submit" value="<?=$button?>">
+        </form>
         <a href="/public/">Home</a>
         <a href='/public/logout.php'>Sign out</a>
     </div>
-    
-    <!-- <div class="div-block">
-        <img src="http://192.168.1.199:8081" alt="fishcam">
-    </div> -->
 
 </body>
 </html>

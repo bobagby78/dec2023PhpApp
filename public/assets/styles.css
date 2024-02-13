@@ -12,3 +12,22 @@ label, input {
     display: block; 
 }
 
+.form-control{
+    padding-left: 10px;
+}
+
+.input-form{
+    margin: 10px;
+    padding: 5px;
+}
+
+.input-button{
+    color: white;
+    font-size: 100%;
+    background-color: green;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin: 10px;
+}
+

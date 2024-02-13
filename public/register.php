@@ -1,6 +1,6 @@
 <?php
 include '../cfg.php';
-// session_set_cookie_params(0, '/', '', true, true); // Lifetime 0 means until the browser is closed
+session_set_cookie_params(0, '/', '', true, true); // Lifetime 0 means until the browser is closed
 session_start();
 error_log($_SESSION['username'] . ' IS THE CURRENT USER');
 
@@ -14,7 +14,9 @@ $result = pg_query_params($connxn, $query, array($username)); //this gives the p
 if($_SERVER['REQUEST_METHOD']== 'POST'){
 
     $username = $_POST['username'];
+    $_SESSION['username'] = $username;
     $email = $_POST['email'];
+    $_SESSION['email'] = $email;
     $password = $_POST['password'];
     $confirm = $_POST['confirm'];
     $hashPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -26,7 +28,7 @@ if($_SERVER['REQUEST_METHOD']== 'POST'){
         // $result ? echo "Registration successful, welcome to the club"; : "Something went wrong";
         if($result){
             echo "Registration successful! Welcome to the club";
-            header("Location: /public/resources.php");
+            header("Location: /public/welcome.php");
         } else {
             echo "Something went wrong";
         }
