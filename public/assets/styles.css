@@ -8,6 +8,10 @@
     margin: 10px;
 }
 
+.fav-poke-stats{
+    display: inline-block !important;
+}
+
 label, input {
     display: block; 
 }

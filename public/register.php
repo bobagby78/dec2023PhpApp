@@ -5,22 +5,24 @@ session_start();
 // error_log($_SESSION['username'] . ' IS THE CURRENT USER');
 
 //no users with mult accounts
-function userExists($emailAddress, $username, $connxn)
-{
-    $existingUser = false;
+// function userExists($emailAddress, $username, $conn)
+// {
+//     $existingUser = false;
 
-    $queryEmail = 'SELECT COUNT(*) FROM users WHERE email = $1';
-    $queryUsername = 'SELECT COUNT(*) FROM users WHERE username = $2';
+//     $queryEmail = 'SELECT COUNT(*) FROM users WHERE email = $1;';
+//     $queryUsername = 'SELECT COUNT(*) FROM users WHERE username = $1;';
 
-    $resultEmail = pg_query_params($connxn, $queryEmail, array($emailAddress));
-    $resultUsername = pg_query_params($connxn, $queryUsername, array($username));
+//     $resultEmail = pg_query_params($conn, $queryEmail, array($emailAddress));
+//     $resultUsername = pg_query_params($conn, $queryUsername, array($username));
 
-    if (pg_fetch_result($resultUsername, 0) > 0 || pg_fetch_result($resultEmail, 0) > 0) {
-        $existingUser = true;
-    }
+//     if (pg_fetch_result($resultUsername, 0) > 0 || pg_fetch_result($resultEmail, 0) > 0) {
+//         $existingUser = true;
+//     }
 
-    return $existingUser;
-}
+
+//     die(pg_fetch_result($resultUsername ));
+//     return $existingUser;
+// }
 
 $username = $_POST['username'];
 $password = $_POST['password'];
@@ -38,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $hashPassword = password_hash($password, PASSWORD_BCRYPT);
 
     //  validate
-    // if($password === $confirm && userExists($password, $username)){
+    // if ($password === $confirm && !userExists($password, $username, $connxn)) {
     if ($password === $confirm) {
 
         $postQuery = "INSERT INTO users (username, email, hashpass, created) values ($1, $2, $3, current_timestamp)";
@@ -68,6 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "Something went wrong";
         }
     } else {
-        echo ('Passwords do not match.');
+        if ($password !== $confirm) {
+            echo ('Passwords do not match.');
+        }
+        if ($userExists($password, $username, $connxn)) {
+            echo ('That username or email already exists');
+        }
     }
 }
