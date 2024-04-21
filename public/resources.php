@@ -58,8 +58,7 @@ $pokeArray = [];
 foreach ($pokeResults as $result) {
     array_push($pokeArray, $result->name);
 }
-
-error_log(in_array($favPokemon, $pokeArray) ? 'yes' : 'no');
+// echo print_r($pokeArray);
 
 $favPokemonName = $favPokemonDecode->name;
 $favPokemonSpecies = $favPokemonDecode->species->name;
@@ -67,9 +66,7 @@ $favPokemonExp = $favPokemonDecode->base_experience;
 // $favPokemonAbilities = ; //This one should be an array, handled accordingly
 // $favPokemonType = ;
 
-// die($favPokemonName);
 
-// FUTURE ENRICHMENT: get page to reload if a user adds/changes fav pokemon. 
 ?>
 
 <!DOCTYPE html>
@@ -95,6 +92,7 @@ $favPokemonExp = $favPokemonDecode->base_experience;
             <input class="input-form" name="fav-pokemon" id="fav-pokemon-form" type="text" autofocus>
             <input class="input-button" type="submit" value="<?= $button ?>">
         </form>
+        <p id="partial-matches"></p>
         <a href="/public/">Home</a>
         <a href='/public/logout.php'>Sign out</a>
     </div>
@@ -116,9 +114,31 @@ $favPokemonExp = $favPokemonDecode->base_experience;
 
     <script>
         //use jquery to autocomplete based on db table
-        $('#fav-pokemon-form').on('keyup', function() {
-            console.log('clickety clack')
-        });
+        let favForm = document.getElementById('fav-pokemon-form');
+        let favEntry = favForm.value;
+        let pokeArray = <?= json_encode($pokeArray); ?>;
+
+        console.log(pokeArray[100]);
+
+        favForm.addEventListener('keyup', function() {
+            let partialMatchArray = pokeArray.filter(x => x.includes(this.value));
+            let partialMatches = document.getElementById('partial-matches');
+
+            if (this.value.length < 4) {
+                partialMatches.innerHTML = '';
+                console.log('clickety')
+            } else {
+                console.log('clackety')
+                if (!pokeArray.some(x => x.includes(this.value))) {
+                    console.log('Shit, that one\'s not in there')
+                } else {
+                    partialMatchArray.forEach((item) => {
+                        partialMatches.innerHTML = item;
+                    })
+                }
+
+            }
+        })
     </script>
 
 </body>
