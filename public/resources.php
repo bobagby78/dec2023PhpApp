@@ -1,12 +1,17 @@
 <?php
+// include('../node_modules/dist/jquery.js');
 include('../cfg.php');
 session_start();
 if (isset($_SESSION['username'])) {
     $activeUser = ucfirst($_SESSION['username']);
     $userid = $_SESSION['userid'];
 } else {
-    $activeUser = "Unknown user";
+    $activeUser = "fav-pokemon-formUnknown user";
 }
+
+// $allPokemon = "SELECT name FROM all_pokemon";
+// error_log(print_r($allPokemon));
+
 
 //get user favorite pokemon if it exists
 $getFav = "select * from fav_pokemon where id = $1"; //prepare a query to get user's fav pokemon
@@ -38,11 +43,23 @@ if (is_null($favPokemon)) {  //set values for html form
     $button = 'Change it!';
 }
 
-error_log('favorite pokemon: ' . $favPokemon);
+// error_log('favorite pokemon: ' . $favPokemon);
 
 //hit the free pokemon api and get stats for user's fav pokemon. 
 $favPokemonObj = file_get_contents('https://pokeapi.co/api/v2/pokemon/' . strtolower($favPokemon));
 $favPokemonDecode = json_decode($favPokemonObj);
+
+//get all the pokemon from the pokeapi for autocomplete
+$allPokemon = (file_get_contents('https://pokeapi.co/api/v2/pokemon/?limit=-1'));
+// $allPokemon = json_decode($allPokemon);
+
+$pokeResults = (json_decode($allPokemon)->results);
+$pokeArray = [];
+foreach ($pokeResults as $result) {
+    array_push($pokeArray, $result->name);
+}
+
+error_log(in_array($favPokemon, $pokeArray) ? 'yes' : 'no');
 
 $favPokemonName = $favPokemonDecode->name;
 $favPokemonSpecies = $favPokemonDecode->species->name;
@@ -63,8 +80,11 @@ $favPokemonExp = $favPokemonDecode->base_experience;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/public/assets/styles.css">
     <link rel="icon" href="/public/assets/nerd.jpg">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title>Resources</title>
 </head>
+
+<!-- TODO: turn the text input into a select that matches what's in the array -->
 
 <body>
     <div class="div-block">
@@ -93,6 +113,13 @@ $favPokemonExp = $favPokemonDecode->base_experience;
         </div>
 
     </div>
+
+    <script>
+        //use jquery to autocomplete based on db table
+        $('#fav-pokemon-form').on('keyup', function() {
+            console.log('clickety clack')
+        });
+    </script>
 
 </body>
 
