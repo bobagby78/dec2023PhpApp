@@ -132,9 +132,7 @@ $favPokemonExp = $favPokemonDecode->base_experience;
                 if (!pokeArray.some(x => x.includes(this.value))) {
                     console.log('Shit, that one\'s not in there')
                 } else {
-                    partialMatchArray.forEach((item) => {
-                        partialMatches.innerHTML = item;
-                    })
+                    partialMatches.innerHTML = partialMatchArray[0];
                 }
 
             }
