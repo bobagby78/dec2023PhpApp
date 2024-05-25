@@ -89,10 +89,15 @@ $favPokemonExp = $favPokemonDecode->base_experience;
         <p>Your favorite Pokemon is <?= ucfirst($favPokemon) ?></p>
         <label for="fav-pokemon-form"><?= $pokeFormTitle ?> </label>
         <form class="form-control" action="/public/resources.php" method='post'>
+            <!-- <select name="input-form" id="fav-pokemon">
+                <option id="closest-match" value=""></option>
+            </select> -->
             <input class="input-form" name="fav-pokemon" id="fav-pokemon-form" type="text" autofocus>
             <input class="input-button" type="submit" value="<?= $button ?>">
         </form>
-        <p id="partial-matches"></p>
+        <p id="partial-matches0"></p>
+        <p id="partial-matches1"></p>
+        <p id="partial-matches2"></p>
         <a href="/public/">Home</a>
         <a href='/public/logout.php'>Sign out</a>
     </div>
@@ -122,17 +127,23 @@ $favPokemonExp = $favPokemonDecode->base_experience;
 
         favForm.addEventListener('keyup', function() {
             let partialMatchArray = pokeArray.filter(x => x.includes(this.value));
-            let partialMatches = document.getElementById('partial-matches');
+            let partialMatches0 = document.getElementById('partial-matches0');
+            let partialMatches1 = document.getElementById('partial-matches1');
+            let partialMatches2 = document.getElementById('partial-matches2');
 
             if (this.value.length < 4) {
-                partialMatches.innerHTML = '';
+                partialMatches0.innerHTML = '';
+                partialMatches1.innerHTML = '';
+                partialMatches2.innerHTML = '';
                 console.log('clickety')
             } else {
                 console.log('clackety')
                 if (!pokeArray.some(x => x.includes(this.value))) {
                     console.log('Shit, that one\'s not in there')
                 } else {
-                    partialMatches.innerHTML = partialMatchArray[0];
+                    partialMatches0.innerHTML = `${partialMatchArray[0]? partialMatchArray[0] : ''}`
+                    partialMatches1.innerHTML = `${partialMatchArray[1]? partialMatchArray[1] : ''}`
+                    partialMatches2.innerHTML = `${partialMatchArray[2]? partialMatchArray[2] : ''}`
                 }
 
             }
